@@ -14,6 +14,20 @@ public class Build {
    * @param k the maximum word length (exclusive)
    */
   public static void printShortWords(Vertex<String> vertex, int k) {
+
+    printShortWords(vertex, k, new HashSet<>());
+  }
+  private static void printShortWords(Vertex<String> vertex, int k, Set<String> seen) {
+    if ((vertex == null) || seen.contains(vertex.data)) {
+      return;
+    }
+    seen.add(vertex.data);
+    if (vertex.data.length() < k) {
+      System.out.println(vertex.data);
+    }
+    for (Vertex<String> neighbor : vertex.neighbors) {
+      printShortWords(neighbor, k, seen);
+    }
   }
 
   /**
@@ -22,9 +36,24 @@ public class Build {
    * @param vertex the starting vertex
    * @return the longest reachable word, or an empty string if the vertex is null
    */
-  public static String longestWord(Vertex<String> vertex) {
-    return "";
-  }
+  // public static String longestWord(Vertex<String> vertex) {
+  //   return longestWord(vertex, new HashSet<>());
+  // }
+  // public static String longestWord(Vertex<String> vertex, Set<String> seen) {
+  //   if ((vertex == null) || seen.contains(vertex.data)) {
+  //     return "";
+  //   }
+
+  //   seen.add(vertex.data);
+  //   String longest = vertex.data;
+  //   for (Vertex<String> neighbor : vertex.neighbors) {
+  //     String neighborLongest = longestWord(neighbor, seen);
+  //     if (neighborLongest.length() > longest.length()) {
+  //         longest = neighborLongest;
+  //     }
+  //   }
+  //   return longest;
+  // }
 
   /**
    * Prints the values of all vertices that are reachable from the given vertex and 
