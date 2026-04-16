@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -77,8 +78,6 @@ public class Build {
     for (Vertex<T> neighbor : vertex.neighbors) {
       printSelfLoopers(neighbor, seen);
     }
-
-
   }
 
   /**
@@ -90,6 +89,23 @@ public class Build {
    * @return true if the destination is reachable from the start, false otherwise
    */
   public static boolean canReach(Airport start, Airport destination) {
+    return canReach(start, destination, new HashSet<>());
+
+  }
+  public static boolean canReach(Airport start, Airport destination, Set<Airport> seen) {
+    if (start == destination) {
+      return true;
+    }
+    if (seen.contains(start)) {
+      return false;
+    }
+    seen.add(start);
+    for (Airport neighbor : start.getOutboundFlights()) {
+      if (canReach(neighbor, destination, seen)) {
+        return true;
+      }
+    }
+
     return false;
   }
 
@@ -103,6 +119,22 @@ public class Build {
    * @return a set of values that cannot be reached from the starting value
    */
   public static <T> Set<T> unreachable(Map<T, List<T>> graph, T starting) {
-    return new HashSet<>();
+    Set<T> seen = new HashSet<>();
+
+    unreachable(graph, starting, seen);
+    Set<T> newSet = new HashSet<>(graph.keySet());
+    newSet.removeAll(seen);
+    return newSet;
+
+  }
+
+  public static <T> void unreachable(Map<T, List<T>> graph, T starting, Set<T> seen) {
+    if (graph == null || seen.contains(starting) || !graph.containsKey(starting)) {
+      return;
+    }
+    seen.add(starting);
+    for (T neighbor : graph.get(starting)) {
+      unreachable(graph, neighbor, seen);
+    }
   }
 }
